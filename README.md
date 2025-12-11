@@ -28,7 +28,7 @@ A comprehensive command-line cybersecurity toolkit that provides various cryptog
 
 1. Clone this repository or download the source code:
 ```bash
-git clone <repository-url>
+git clone https://github.com/rvega1204/cyber_toolkit.git
 cd cyber_toolkit
 ```
 
