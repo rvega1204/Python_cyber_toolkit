@@ -1,6 +1,6 @@
 # Cybersecurity Toolkit
 
-A comprehensive command-line cybersecurity toolkit that provides various cryptographic and security utilities for file hashing, encryption, and password management.
+A comprehensive command-line cybersecurity toolkit that provides various cryptographic and security utilities for file hashing, encryption, password management, and encoding.
 
 ## Features
 
@@ -10,6 +10,8 @@ A comprehensive command-line cybersecurity toolkit that provides various cryptog
 - **RSA-2048 Encryption**: Asymmetric encryption with OAEP padding
 - **Password Strength Evaluation**: Analyze password security using zxcvbn
 - **Secure Password Hashing**: Hash passwords using bcrypt with salt
+- **Strong Password Generator**: Generate cryptographically secure random passwords
+- **Base64 Encoding/Decoding**: Encode and decode text in Base64 format
 
 ## Table of Contents
 
@@ -19,7 +21,9 @@ A comprehensive command-line cybersecurity toolkit that provides various cryptog
   - [Hash Module](#hash-module)
   - [Encryption Module](#encryption-module)
   - [Password Module](#password-module)
+  - [Encoding Module](#encoding-module)
 - [Examples](#examples)
+- [Testing](#testing)
 - [Requirements](#requirements)
 - [Security Considerations](#security-considerations)
 - [License](#license)
@@ -63,6 +67,8 @@ The application provides the following options:
 3. **AES Encrypt/Decrypt** - Demonstrate symmetric encryption using AES-256-GCM
 4. **RSA Encrypt/Decrypt** - Demonstrate asymmetric encryption using RSA-2048
 5. **Password Manager** - Evaluate password strength and generate secure hashes
+6. **Generate Strong Password** - Create cryptographically secure random passwords
+7. **Base64 Encode/Decode** - Encode and decode text in Base64 format
 0. **Exit** - Quit the application
 
 ## Modules
@@ -125,6 +131,28 @@ Located in `modules/password.py`, this module handles password security operatio
   - Returns: `True` if password matches, `False` otherwise
   - Uses constant-time comparison to prevent timing attacks
 
+- **`create_strong_password(length=16)`**: Generates a strong random password
+  - Parameters: `length` (int, optional) - Password length (minimum 16)
+  - Returns: str - A cryptographically secure random password
+  - Guarantees at least one uppercase, lowercase, digit, and special character
+  - Uses the `secrets` module for cryptographic randomness
+
+### Encoding Module
+
+Located in `modules/encoding.py`, this module provides encoding and decoding utilities.
+
+#### Functions:
+
+- **`encode_base64(text)`**: Encodes text to Base64 format
+  - Parameters: `text` (str) - The plaintext to encode
+  - Returns: str - The Base64 encoded string
+  - Handles UTF-8 encoding automatically
+
+- **`decode_base64(encoded_text)`**: Decodes Base64 to plaintext
+  - Parameters: `encoded_text` (str) - The Base64 string to decode
+  - Returns: str - The decoded plaintext, or None if invalid
+  - Includes error handling for invalid Base64 input
+
 ## Examples
 
 ### Example 1: Hashing a File
@@ -186,6 +214,84 @@ is_valid = verify_password("MyPassword123!", hashed)
 print(f"Valid: {is_valid}")
 ```
 
+### Example 6: Generate Strong Password
+
+```python
+from modules.password import create_strong_password, evaluate_password_strength
+
+# Generate default length password (16 characters)
+password = create_strong_password()
+print(f"Generated: {password}")
+
+# Generate custom length password
+long_password = create_strong_password(24)
+print(f"Generated (24 chars): {long_password}")
+
+# Evaluate the generated password
+evaluate_password_strength(password)
+```
+
+### Example 7: Base64 Encoding
+
+```python
+from modules.encoding import encode_base64, decode_base64
+
+# Encode text
+text = "Hello World!"
+encoded = encode_base64(text)
+print(f"Encoded: {encoded}")
+
+# Decode text
+decoded = decode_base64(encoded)
+print(f"Decoded: {decoded}")
+```
+
+## Testing
+
+The project includes comprehensive unit tests for all modules.
+
+### Running Tests
+
+To run all tests:
+
+```bash
+# From the project root directory
+python -m unittest discover tests
+
+# Or run the test suite directly
+python tests/run_all_tests.py
+```
+
+To run individual test files:
+
+```bash
+# Test password module
+python -m unittest tests.test_password
+
+# Test encoding module
+python -m unittest tests.test_encoding
+
+# Test hash module
+python -m unittest tests.test_hash
+
+# Test encryption module
+python -m unittest tests.test_encryption
+```
+
+### Test Coverage
+
+The test suite includes:
+- **test_password.py**: 8 tests for password hashing, verification, and generation
+- **test_encoding.py**: 10 tests for Base64 encoding and decoding
+- **test_hash.py**: 11 tests for file hashing and integrity verification
+- **test_encryption.py**: 19 tests for AES and RSA encryption/decryption
+
+All tests verify:
+- Correct functionality with valid inputs
+- Proper error handling with invalid inputs
+- Edge cases (empty strings, special characters, Unicode)
+- Security properties (uniqueness, format validation)
+
 ## Requirements
 
 - Python 3.7+
@@ -230,7 +336,15 @@ cyber_toolkit/
 ├── modules/
 │   ├── hash.py                 # File hashing and integrity verification
 │   ├── encryption.py           # AES and RSA encryption operations
-│   └── password.py             # Password security and management
+│   ├── password.py             # Password security and management
+│   └── encoding.py             # Base64 encoding and decoding
+├── tests/
+│   ├── __init__.py             # Tests package initializer
+│   ├── test_hash.py            # Unit tests for hash module
+│   ├── test_encryption.py      # Unit tests for encryption module
+│   ├── test_password.py        # Unit tests for password module
+│   ├── test_encoding.py        # Unit tests for encoding module
+│   └── run_all_tests.py        # Test runner for all modules
 ├── README.md                   # This file
 ├── .gitignore                  # Git ignore file
 └── venv/                       # Virtual environment (not committed to git)
@@ -250,7 +364,7 @@ Ricardo Vega
 
 ## Version
 
-1.0
+1.1
 
 ## License
 

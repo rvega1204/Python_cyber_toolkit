@@ -8,16 +8,20 @@ Features:
     - Password strength analysis using zxcvbn
     - Secure password hashing with bcrypt
     - Password verification against stored hashes
+    - Strong random password generation
 
 Functions:
     evaluate_password_strength(password): Analyzes password strength
     hash_password(password): Creates a secure bcrypt hash
     verify_password(password, hashed): Verifies password against hash
+    create_strong_password(length): Generates a strong random password
 """
 
 import bcrypt
 from zxcvbn import zxcvbn
 import hashlib
+import secrets
+import string
 
 
 def evaluate_password_strength(password):
@@ -129,3 +133,61 @@ def verify_password(password, hashed):
     except Exception as e:
         print(f"Error verifying password: {e}")
         return False
+
+
+
+def create_strong_password(length=16):
+    """
+    Generate a strong random password with numbers and special characters.
+
+    Creates a cryptographically secure random password using the secrets module,
+    which is suitable for security-sensitive applications. The password will
+    include uppercase letters, lowercase letters, digits, and special characters.
+
+    Args:
+        length (int, optional): The length of the password. Defaults to 16.
+                                Minimum length is 16 for security.
+
+    Returns:
+        str: A strong random password
+
+    Example:
+        >>> password = create_strong_password()
+        >>> print(f"Generated password: {password}")
+        Generated password: K9#mP2$xQ7!wE3&h
+        >>> password = create_strong_password(20)
+        >>> print(f"Generated password: {password}")
+        Generated password: A8#bC2$dE9!fG3&hI7%j
+
+    Note:
+        The password will always contain at least one character from each
+        category (uppercase, lowercase, digit, special character) to ensure
+        strength and meet common password requirements.
+    """
+    if length < 16:
+        raise ValueError("Password length must be at least 16 characters for security")
+
+    # Define character sets
+    uppercase = string.ascii_uppercase
+    lowercase = string.ascii_lowercase
+    digits = string.digits
+    special_chars = "!@#$%^&*()_+-=[]{}|;:,.<>?"
+
+    # Combine all characters
+    all_chars = uppercase + lowercase + digits + special_chars
+
+    # Ensure at least one character from each category
+    password = [
+        secrets.choice(uppercase),
+        secrets.choice(lowercase),
+        secrets.choice(digits),
+        secrets.choice(special_chars)
+    ]
+
+    # Fill the rest of the password length with random characters
+    password += [secrets.choice(all_chars) for _ in range(length - 4)]
+
+    # Shuffle the password to avoid predictable patterns
+    secrets.SystemRandom().shuffle(password)
+
+    return ''.join(password)
